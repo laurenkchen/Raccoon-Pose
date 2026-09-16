@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raccoon</title>
+    <script type="module">
+        import {FilesetResolver, GestureRecognizer} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3"
+        const video = document.getElementById("webcam");
+        const raccoonImg = document.getElementById("raccoon");
+        const status = document.getElementById("status");
+        const raccoonImages = ["images/0.jpeg", "images/1.jpeg", "images/2.jpeg", "images/3.jpeg", "images/4.jpeg","images/5.jpeg", "images/6.jpeg","images/7.jpeg"];
+        let lastImageIndex = 0;
+        let isHandRaised = false;
+        async function init(){
+            status.innerText = "loading"
+            const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm")
+            const gestureRecognizer = await GestureRecognizer.createFromOptions(vision,{
+                baseOptions:{
+                    modelAssetPath: "https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task",
+                    delegate:"GPU"
+
+                },
+                runningMode: "VIDEO",
+                numHands: 2
+
+            });
+            return gestureRecognizer;       
+        }
+        function startWebcam(gestureRecognizer){
+            navigator.mediaDevices.getUserMedia({video:true}).then((stream) =>{
+                video.srcObject = stream;
+                video.addEventListener("loadeddata", ()=>{
+                    status.innerText = "Put your hand up!";
+                    predictLoop(gestureRecognizer);
+                });
+            });
+        }
+        function predictLoop(gestureRecognizer){
+            let nowInMs = performance.now();
+            
+            const results = gestureRecognizer.recognizeForVideo(video, nowInMs);
+            if(results.gestures.length>=2){
+                const hand1 = results.gestures[0][0].categoryName;
+                const hand2 = results.gestures[1][0].categoryName;
+                if(hand1 === "Open_Palm" && hand2 === "Open_Palm"){
+                    raccoonImg.src = raccoonImages[1];
+                } 
+            
+            }
+            else if(results.gestures && results.gestures.length>0) {
+                const gesture = results.gestures[0][0].categoryName;
+
+                if(gesture==="Open_Palm"){
+                    raccoonImg.src = raccoonImages[3];
+                } else if(gesture=="Pointing_Up") {
+                    raccoonImg.src = raccoonImages[2];
+                }
+                else if(gesture==="Closed_Fist"){
+                    raccoonImg.src = raccoonImages[4];
+                } else if(gesture==="Thumb_Up"){
+                    raccoonImg.src = raccoonImages[7];
+                }
+                
+            } else {
+                raccoonImg.src = raccoonImages[0];
+            }
+            requestAnimationFrame(()=>predictLoop(gestureRecognizer));
+        }
+        
+        init().then((gestureRecognizer)=>{
+            startWebcam(gestureRecognizer);
+        });
+   </script>
+    
+</head>
+<body>
+    <div id="container">
+        <video id="webcam" autoplay playsinline></video>
+        <img id = "raccoon" src="">
+        <p id="status"></p>
+    </div>
+    <ul>
+        gestures you can use!
+        <li>Open Palm</li>
+        <li>Double Open Palm</li>
+        <li>Pointing up</li>
+        <li>Closed Fist</li>
+        <li>Thumbs up</li>
+    </ul>
+    
+</body>
+</html>
