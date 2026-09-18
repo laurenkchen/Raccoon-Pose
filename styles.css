@@ -39,12 +39,9 @@ ul{
 
 }
 body{
-    cursor: url('path/to/your-cursor.png'), auto;
     background: #F0F0F0;
 }
-a:hover, button:hover {
-    cursor: url('path/to/hover-cursor.png'), pointer;
-}
+
 #containment {
     display: flex;
     flex-direction: column; 
