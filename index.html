@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Raccoon</title>
+    <link rel = "stylesheet" href = "styles.css">
     <script type="module">
         import {FilesetResolver, GestureRecognizer} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3"
         const video = document.getElementById("webcam");
@@ -75,19 +76,29 @@
     
 </head>
 <body>
-    <div id="container">
-        <video id="webcam" autoplay playsinline></video>
-        <img id = "raccoon" src="">
-        <p id="status"></p>
+    <div id="all">
+        <h1>RACCOON!!!</h1>
+
+        <div id = "hor">
+            <video id="webcam" autoplay playsinline></video>
+            <div id="containment">
+                <p>silly little raccoon ⤵</p>
+                <img id = "raccoon" src="">
+                <p id="status"></p>
+                <ul>
+                <li>Open Palm</li>
+                <li>Double Open Palm</li>
+                <li>Pointing up</li>
+                <li>Closed Fist</li>
+                <li>Thumbs up</li>
+                </ul>
+            </div>
+            
+            
+        </div>
+        
+        
     </div>
-    <ul>
-        gestures you can use!
-        <li>Open Palm</li>
-        <li>Double Open Palm</li>
-        <li>Pointing up</li>
-        <li>Closed Fist</li>
-        <li>Thumbs up</li>
-    </ul>
     
 </body>
 </html>
